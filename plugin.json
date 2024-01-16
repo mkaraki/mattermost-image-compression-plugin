@@ -1,28 +1,94 @@
 {
-    "id": "com.mattermost.plugin-starter-template",
-    "name": "Plugin Starter Template",
-    "description": "This plugin serves as a starting point for writing a Mattermost plugin.",
-    "homepage_url": "https://github.com/mattermost/mattermost-plugin-starter-template",
-    "support_url": "https://github.com/mattermost/mattermost-plugin-starter-template/issues",
-    "release_notes_url": "https://github.com/mattermost/mattermost-plugin-starter-template/releases/tag/v0.1.0",
-    "icon_path": "assets/starter-template-icon.svg",
+    "id": "com.mkarakiapps.mattermost-image-compression-plugin",
+    "name": "Image Compression",
+    "description": "Webp image encoder plugin for Mattermost",
+    "homepage_url": "https://github.com/mkaraki/mattermost-image-compression-plugin",
+    "support_url": "https://github.com/mkaraki/mattermost-image-compression-plugin/issues",
+    "release_notes_url": "https://github.com/mkaraki/mattermost-image-compression-plugin/releases/",
     "version": "0.1.0",
     "min_server_version": "6.2.1",
     "server": {
         "executables": {
             "linux-amd64": "server/dist/plugin-linux-amd64",
-            "linux-arm64": "server/dist/plugin-linux-arm64",
-            "darwin-amd64": "server/dist/plugin-darwin-amd64",
-            "darwin-arm64": "server/dist/plugin-darwin-arm64",
             "windows-amd64": "server/dist/plugin-windows-amd64.exe"
         }
     },
-    "webapp": {
-        "bundle_path": "webapp/dist/main.js"
-    },
     "settings_schema": {
-        "header": "",
+        "header": "Image compression plugin for uploaded images. See [GitHub](https://github.com/mkaraki/mattermost-image-compression-plugin) for more details.",
         "footer": "",
-        "settings": []
+        "settings": [
+            {
+                "key": "OutputImageFormat",
+                "display_name": "Output Image Format",
+                "type": "dropdown",
+                "help_text": "Output image format.",
+                "placeholder": "",
+                "default": "webp",
+                "options": [
+                    {
+                        "display_name": "WebP",
+                        "value": "webp"
+                    }
+                ]
+            },
+            {
+                "key": "ImageQuality",
+                "display_name": "Image Quality",
+                "type": "number",
+                "help_text": "Image quality for the image encoder.",
+                "placeholder": "10",
+                "default": 10
+            },
+            {
+                "key": "DoImageResize",
+                "display_name": "Do Image Resize",
+                "type": "bool",
+                "help_text": "If true, the image will be resized to the maximum dimension specified below.",
+                "placeholder": "",
+                "default": true
+            },
+            {
+                "key": "ImageMaxDimension",
+                "display_name": "Image Max Dimension",
+                "type": "number",
+                "help_text": "Maximum dimension of the image. If the image is larger than this, it will be resized to this dimension.",
+                "placeholder": "1280",
+                "default": 1280
+            },
+            {
+                "key": "ImageInterpolationFunction",
+                "display_name": "Image Interpolation Function",
+                "type": "dropdown",
+                "help_text": "Interpolation function used for resizing the image.",
+                "placeholder": "",
+                "default": "lanczos3",
+                "options": [
+                    {
+                        "display_name": "Nearest Neighbor",
+                        "value": "nearest"
+                    },
+                    {
+                        "display_name": "Bilinear",
+                        "value": "bilinear"
+                    },
+                    {
+                        "display_name": "Bicubic",
+                        "value": "bicubic"
+                    },
+                    {
+                        "display_name": "Mitchell-Netravali",
+                        "value": "mitchell-netravali"
+                    },
+                    {
+                        "display_name": "Lanczos (a=2)",
+                        "value": "lanczos2"
+                    },
+                    {
+                        "display_name": "Lanczos (a=3)",
+                        "value": "lanczos3"
+                    }
+                ]
+            }
+        ]
     }
 }
