@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"image"
 	"io"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"go.oneofone.dev/resize"
 
 	_ "image/gif"
+	"image/jpeg"
 	_ "image/jpeg"
 	_ "image/png"
 
@@ -105,6 +107,36 @@ func (p *Plugin) ExportImageAsWebp(info *model.FileInfo, image image.Image, outp
 	return info, nil
 }
 
+func (p *Plugin) ExportImageAsJpeg(info *model.FileInfo, image image.Image, output io.Writer) (*model.FileInfo, error) {
+	image_quality := p.configuration.ImageQuality
+
+	if (image_quality < 0) || (image_quality > 100) {
+		p.API.LogWarn("Invalid image quality value, use 10.")
+		image_quality = 10
+	}
+
+	jpeg_data := &bytes.Buffer{}
+
+	jpeg_writer := io.MultiWriter(output, jpeg_data)
+
+	err := jpeg.Encode(jpeg_writer, image, &jpeg.Options{Quality: image_quality})
+	if err != nil {
+		p.API.LogError("Failed to encode image as JPEG", "error", err.Error())
+		return nil, err
+	}
+
+	output_size := jpeg_data.Len()
+
+	p.API.LogDebug("Successfully encoded image as JPEG", "size", output_size)
+
+	info.Extension = "jpg"
+	info.Name = info.Name + ".jpg"
+	info.MimeType = "image/jpeg"
+	info.Size = int64(output_size)
+
+	return info, nil
+}
+
 func (p *Plugin) ReadImage(file io.Reader) (image.Image, error) {
 	image, image_type, err := image.Decode(file)
 	if err != nil {
@@ -132,7 +164,18 @@ func (p *Plugin) FileWillBeUploaded(c *plugin.Context, info *model.FileInfo, fil
 
 	resized_image := p.ResizeImageOrPassThrough(original_image)
 
-	new_file_info, err := p.ExportImageAsWebp(info, resized_image, output)
+	output_format := p.configuration.OutputImageFormat
+
+	var new_file_info *model.FileInfo
+
+	switch output_format {
+	default:
+	case "webp":
+		new_file_info, err = p.ExportImageAsWebp(info, resized_image, output)
+	case "jpeg":
+		new_file_info, err = p.ExportImageAsJpeg(info, resized_image, output)
+	}
+
 	if err != nil {
 		return nil, "Unable to export compressed image. Contact your system administrator."
 	}

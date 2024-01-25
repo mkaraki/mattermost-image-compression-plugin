@@ -28,6 +28,10 @@
                     {
                         "display_name": "WebP",
                         "value": "webp"
+                    },
+                    {
+                        "display_name": "JPEG",
+                        "value": "jpeg"
                     }
                 ]
             },
