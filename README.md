@@ -1,6 +1,7 @@
 # Mattermost Image Compression Plugin
 
 [![Build Status](https://github.com/mkaraki/mattermost-image-compression-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/mkaraki/mattermost-image-compression-plugin/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/mkaraki/mattermost-image-compression-plugin/graph/badge.svg?token=49N94VPBJI)](https://codecov.io/gh/mkaraki/mattermost-image-compression-plugin)
 
 Resize uploaded image and compress them with [WebP](https://developers.google.com/speed/webp).
 
