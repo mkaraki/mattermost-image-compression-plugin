@@ -31,4 +31,10 @@ jobs:
         name: com.mkarakiapps.mattermost-image-compression-plugin
         path: dist/com.mkarakiapps.mattermost-image-compression-plugin-*.tar.gz
       
+    - name: Test
+      run: make test
 
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

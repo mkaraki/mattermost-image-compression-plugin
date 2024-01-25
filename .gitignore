@@ -5,3 +5,5 @@ dist/
 
 # Jetbrains
 .idea/
+
+*.coverage.out
