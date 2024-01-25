@@ -17,7 +17,7 @@ jobs:
         go-version: '^1.21.5'
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y gcc-multilib gcc-mingw-w64 binutils-mingw-w64
+      run: sudo apt-get update && sudo apt-get install -y gcc-multilib gcc-mingw-w64 binutils-mingw-w64 g++-mingw-w64
 
     - name: Build
       run: make server

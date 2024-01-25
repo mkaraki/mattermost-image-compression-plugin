@@ -78,7 +78,7 @@ else
 #	cd server && env CGO_ENABLED=${CGO_ENABLED} GOOS=linux   GOARCH=arm64 $(GO) build $(GO_BUILD_FLAGS) $(GO_BUILD_GCFLAGS) -trimpath -o dist/plugin-linux-arm64;
 #	cd server && env CGO_ENABLED=${CGO_ENABLED} GOOS=darwin  GOARCH=amd64 $(GO) build $(GO_BUILD_FLAGS) $(GO_BUILD_GCFLAGS) -trimpath -o dist/plugin-darwin-amd64;
 #	cd server && env CGO_ENABLED=${CGO_ENABLED} GOOS=darwin  GOARCH=arm64 CC=arm-linux-gnueabihf-gcc $(GO) build $(GO_BUILD_FLAGS) $(GO_BUILD_GCFLAGS) -trimpath -o dist/plugin-darwin-arm64;
-	cd server && env CGO_ENABLED=${CGO_ENABLED} GOOS=windows GOARCH=amd64 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc $(GO) build $(GO_BUILD_FLAGS) $(GO_BUILD_GCFLAGS) -trimpath -o dist/plugin-windows-amd64.exe;
+	cd server && env CGO_ENABLED=${CGO_ENABLED} GOOS=windows GOARCH=amd64 CXX=x86_64-w64-mingw32-g++-posix CC=x86_64-w64-mingw32-gcc $(GO) build $(GO_BUILD_FLAGS) $(GO_BUILD_GCFLAGS) -trimpath -o dist/plugin-windows-amd64.exe;
 endif
 endif
 

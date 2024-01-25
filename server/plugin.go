@@ -7,6 +7,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/adrium/goheif"
 	"github.com/chai2010/webp"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/plugin"
@@ -149,16 +150,23 @@ func (p *Plugin) ReadImage(file io.Reader) (image.Image, error) {
 
 func (p *Plugin) FileWillBeUploaded(c *plugin.Context, info *model.FileInfo, file io.Reader, output io.Writer) (*model.FileInfo, string) {
 
+	var original_image image.Image
+	var err error
+
 	switch strings.ToLower(info.Extension) {
 	case "jpg", "jpeg", "png", "gif", "webp":
+		p.API.LogDebug("Processing image via Image API", "name", info.Name, "extension", info.Extension)
+		original_image, err = p.ReadImage(file)
+		if err != nil {
+			return info, ""
+		}
+	case "heif", "heic":
+		p.API.LogDebug("Processing image via goHeif", "name", info.Name, "extension", info.Extension)
+		original_image, err = goheif.Decode(file)
+		if err != nil {
+			return info, ""
+		}
 	default:
-		return info, ""
-	}
-
-	p.API.LogDebug("Processing image", "name", info.Name, "extension", info.Extension)
-
-	original_image, err := p.ReadImage(file)
-	if err != nil {
 		return info, ""
 	}
 

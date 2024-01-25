@@ -3,6 +3,7 @@ module github.com/mattermost/mattermost-plugin-starter-template
 go 1.19
 
 require (
+	github.com/adrium/goheif v0.0.0-20230113233934-ca402e77a786
 	github.com/chai2010/webp v1.1.1
 	github.com/mattermost/mattermost/server/public v0.0.6
 	github.com/pkg/errors v0.9.1
@@ -36,6 +37,7 @@ require (
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
+	github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
