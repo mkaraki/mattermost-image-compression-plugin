@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"io"
 	"strings"
@@ -64,6 +65,11 @@ func (p *Plugin) ResizeImageOrPassThrough(original_image image.Image) image.Imag
 }
 
 func (p *Plugin) ExportImageAsWebp(info *model.FileInfo, image image.Image, output io.Writer) (*model.FileInfo, error) {
+	if (info == nil) || (image == nil) || (output == nil) {
+		p.API.LogError("Invalid arguments to ExportImageAsWebp. THIS SHOULD NEVER HAPPEN.")
+		return nil, fmt.Errorf("Invalid arguments to ExportImageAsWebp. THIS SHOULD NEVER HAPPEN.")
+	}
+
 	ImageEncoder := &ImageEncoder{}
 
 	image_quality := p.configuration.ImageQuality
@@ -89,6 +95,11 @@ func (p *Plugin) ExportImageAsWebp(info *model.FileInfo, image image.Image, outp
 }
 
 func (p *Plugin) ExportImageAsJpeg(info *model.FileInfo, image image.Image, output io.Writer) (*model.FileInfo, error) {
+	if (info == nil) || (image == nil) || (output == nil) {
+		p.API.LogError("Invalid arguments to ExportImageAsJpeg. THIS SHOULD NEVER HAPPEN.")
+		return nil, fmt.Errorf("Invalid arguments to ExportImageAsJpeg. THIS SHOULD NEVER HAPPEN.")
+	}
+
 	image_quality := p.configuration.ImageQuality
 
 	if (image_quality < 0) || (image_quality > 100) {
@@ -115,6 +126,11 @@ func (p *Plugin) ExportImageAsJpeg(info *model.FileInfo, image image.Image, outp
 }
 
 func (p *Plugin) ReadImage(file io.Reader) (image.Image, error) {
+	if file == nil {
+		p.API.LogError("Invalid arguments to ReadImage. THIS SHOULD NEVER HAPPEN.")
+		return nil, fmt.Errorf("Invalid arguments to ReadImage. THIS SHOULD NEVER HAPPEN.")
+	}
+
 	image, image_type, err := image.Decode(file)
 	if err != nil {
 		p.API.LogError("Failed to decode image", "error", err.Error())
