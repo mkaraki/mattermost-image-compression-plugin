@@ -395,6 +395,11 @@ func (*MattermostMockAPI) GetPostsSince(channelId string, time int64) (*model.Po
 	panic("unimplemented")
 }
 
+// GetPreferenceForUser implements plugin.API.
+func (*MattermostMockAPI) GetPreferenceForUser(userID string, category string, name string) (model.Preference, *model.AppError) {
+	panic("unimplemented")
+}
+
 // GetPreferencesForUser implements plugin.API.
 func (*MattermostMockAPI) GetPreferencesForUser(userID string) ([]model.Preference, *model.AppError) {
 	panic("unimplemented")
@@ -560,6 +565,11 @@ func (*MattermostMockAPI) InstallPlugin(file io.Reader, replace bool) (*model.Ma
 	panic("unimplemented")
 }
 
+// InviteRemoteToChannel implements plugin.API.
+func (*MattermostMockAPI) InviteRemoteToChannel(channelID string, remoteID string, userID string) error {
+	panic("unimplemented")
+}
+
 // IsEnterpriseReady implements plugin.API.
 func (*MattermostMockAPI) IsEnterpriseReady() bool {
 	panic("unimplemented")
@@ -635,26 +645,6 @@ func (*MattermostMockAPI) LoadPluginConfiguration(dest any) error {
 	panic("unimplemented")
 }
 
-// LogDebug implements plugin.API.
-func (*MattermostMockAPI) LogDebug(msg string, keyValuePairs ...any) {
-	println("LogDebug: "+msg, keyValuePairs)
-}
-
-// LogError implements plugin.API.
-func (*MattermostMockAPI) LogError(msg string, keyValuePairs ...any) {
-	println("LogError: "+msg, keyValuePairs)
-}
-
-// LogInfo implements plugin.API.
-func (*MattermostMockAPI) LogInfo(msg string, keyValuePairs ...any) {
-	println("LogInfo: "+msg, keyValuePairs)
-}
-
-// LogWarn implements plugin.API.
-func (*MattermostMockAPI) LogWarn(msg string, keyValuePairs ...any) {
-	println("LogWarn: "+msg, keyValuePairs)
-}
-
 // OpenInteractiveDialog implements plugin.API.
 func (*MattermostMockAPI) OpenInteractiveDialog(dialog model.OpenDialogRequest) *model.AppError {
 	panic("unimplemented")
@@ -662,6 +652,11 @@ func (*MattermostMockAPI) OpenInteractiveDialog(dialog model.OpenDialogRequest) 
 
 // PatchBot implements plugin.API.
 func (*MattermostMockAPI) PatchBot(botUserId string, botPatch *model.BotPatch) (*model.Bot, *model.AppError) {
+	panic("unimplemented")
+}
+
+// PatchChannelMembersNotifications implements plugin.API.
+func (*MattermostMockAPI) PatchChannelMembersNotifications(members []*model.ChannelMemberIdentifier, notifyProps map[string]string) *model.AppError {
 	panic("unimplemented")
 }
 
@@ -702,6 +697,11 @@ func (*MattermostMockAPI) RegisterCollectionAndTopic(collectionType string, topi
 
 // RegisterCommand implements plugin.API.
 func (*MattermostMockAPI) RegisterCommand(command *model.Command) error {
+	panic("unimplemented")
+}
+
+// RegisterPluginForSharedChannels implements plugin.API.
+func (*MattermostMockAPI) RegisterPluginForSharedChannels(opts model.RegisterPluginOpts) (remoteID string, err error) {
 	panic("unimplemented")
 }
 
@@ -815,8 +815,33 @@ func (*MattermostMockAPI) SetUserStatusTimedDND(userId string, endtime int64) (*
 	panic("unimplemented")
 }
 
+// ShareChannel implements plugin.API.
+func (*MattermostMockAPI) ShareChannel(sc *model.SharedChannel) (*model.SharedChannel, error) {
+	panic("unimplemented")
+}
+
+// SyncSharedChannel implements plugin.API.
+func (*MattermostMockAPI) SyncSharedChannel(channelID string) error {
+	panic("unimplemented")
+}
+
+// UninviteRemoteFromChannel implements plugin.API.
+func (*MattermostMockAPI) UninviteRemoteFromChannel(channelID string, remoteID string) error {
+	panic("unimplemented")
+}
+
 // UnregisterCommand implements plugin.API.
 func (*MattermostMockAPI) UnregisterCommand(teamID string, trigger string) error {
+	panic("unimplemented")
+}
+
+// UnregisterPluginForSharedChannels implements plugin.API.
+func (*MattermostMockAPI) UnregisterPluginForSharedChannels(pluginID string) error {
+	panic("unimplemented")
+}
+
+// UnshareChannel implements plugin.API.
+func (*MattermostMockAPI) UnshareChannel(channelID string) (unshared bool, err error) {
 	panic("unimplemented")
 }
 
@@ -870,6 +895,16 @@ func (*MattermostMockAPI) UpdatePreferencesForUser(userID string, preferences []
 	panic("unimplemented")
 }
 
+// UpdateSharedChannel implements plugin.API.
+func (*MattermostMockAPI) UpdateSharedChannel(sc *model.SharedChannel) (*model.SharedChannel, error) {
+	panic("unimplemented")
+}
+
+// UpdateSharedChannelCursor implements plugin.API.
+func (*MattermostMockAPI) UpdateSharedChannelCursor(channelID string, remoteID string, cusror model.GetPostsSinceForSyncCursor) error {
+	panic("unimplemented")
+}
+
 // UpdateTeam implements plugin.API.
 func (*MattermostMockAPI) UpdateTeam(team *model.Team) (*model.Team, *model.AppError) {
 	panic("unimplemented")
@@ -914,3 +949,27 @@ func (*MattermostMockAPI) UploadData(us *model.UploadSession, rd io.Reader) (*mo
 func (*MattermostMockAPI) UploadFile(data []byte, channelId string, filename string) (*model.FileInfo, *model.AppError) {
 	panic("unimplemented")
 }
+
+/// LOGS
+
+// LogDebug implements plugin.API.
+func (*MattermostMockAPI) LogDebug(msg string, keyValuePairs ...any) {
+	println("LogDebug: "+msg, keyValuePairs)
+}
+
+// LogError implements plugin.API.
+func (*MattermostMockAPI) LogError(msg string, keyValuePairs ...any) {
+	println("LogError: "+msg, keyValuePairs)
+}
+
+// LogInfo implements plugin.API.
+func (*MattermostMockAPI) LogInfo(msg string, keyValuePairs ...any) {
+	println("LogInfo: "+msg, keyValuePairs)
+}
+
+// LogWarn implements plugin.API.
+func (*MattermostMockAPI) LogWarn(msg string, keyValuePairs ...any) {
+	println("LogWarn: "+msg, keyValuePairs)
+}
+
+/// END OF LOGS
