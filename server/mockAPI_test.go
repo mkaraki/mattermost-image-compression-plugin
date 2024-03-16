@@ -566,7 +566,7 @@ func (*MattermostMockAPI) InstallPlugin(file io.Reader, replace bool) (*model.Ma
 }
 
 // InviteRemoteToChannel implements plugin.API.
-func (*MattermostMockAPI) InviteRemoteToChannel(channelID string, remoteID string, userID string) error {
+func (*MattermostMockAPI) InviteRemoteToChannel(channelID string, remoteID string, userID string, shareIfNotShared bool) error {
 	panic("unimplemented")
 }
 
