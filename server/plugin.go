@@ -171,12 +171,17 @@ func (p *Plugin) FileWillBeUploaded(c *plugin.Context, info *model.FileInfo, fil
 	p.API.LogDebug("Trying to export image", "format", output_format, "original_size", info.Size)
 
 	switch output_format {
-	default:
 	case "webp":
 		new_file_info, err = p.ExportImageAsWebp(info, resized_image, output)
 	case "jpeg":
 		new_file_info, err = p.ExportImageAsJpeg(info, resized_image, output)
+	default:
+		p.API.LogWarn("Output format is not valid value.")
+		return info, ""
 	}
+
+	new_file_info.Width = resized_image.Bounds().Dx()
+	new_file_info.Height = resized_image.Bounds().Dy()
 
 	if err != nil {
 		return nil, "Unable to export compressed image. Contact your system administrator."
