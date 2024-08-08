@@ -2,51 +2,60 @@ package main
 
 import (
 	"fmt"
-	"image"
-
-	"go.oneofone.dev/resize"
+	"github.com/davidbyttow/govips/v2/vips"
 )
 
 type ImageResizer struct{}
 
-func (i *ImageResizer) GetInterpolationFunctionByName(name string) resize.InterpolationFunction {
+func (i *ImageResizer) GetInterpolationFunctionByName(name string) vips.Kernel {
 	switch name {
 	default:
-		return resize.NearestNeighbor
+		return vips.KernelNearest
 	case "nearest":
-		return resize.NearestNeighbor
+		return vips.KernelNearest
 	case "bilinear":
-		return resize.Bilinear
+		return vips.KernelLinear
 	case "bicubic":
-		return resize.Bicubic
+		return vips.KernelCubic
 	case "mitchell-netravali":
-		return resize.MitchellNetravali
+		return vips.KernelMitchell
 	case "lanczos2":
-		return resize.Lanczos2
+		return vips.KernelLanczos2
 	case "lanczos3":
-		return resize.Lanczos3
+		return vips.KernelLanczos3
 	}
 }
 
-func (i *ImageResizer) ResizeImageToOneDimension(img image.Image, dimensionPixel int, interpolation resize.InterpolationFunction) (image.Image, error) {
+func (i *ImageResizer) ResizeImageToOneDimension(img *vips.ImageRef, dimensionPixel int, interpolation vips.Kernel) error {
 	if img == nil {
-		return nil, fmt.Errorf("img must not be nil")
+		return fmt.Errorf("img must not be nil")
 	}
 
 	if dimensionPixel < 1 {
-		return nil, fmt.Errorf("dimensionPixel must be greater than 0")
+		return fmt.Errorf("dimensionPixel must be greater than 0")
 	}
 
 	// Get the original image dimensions
-	original_width := img.Bounds().Dx()
-	original_height := img.Bounds().Dy()
+	original_width := img.Width()
+	original_height := img.Height()
 
 	if (original_width <= dimensionPixel) && (original_height <= dimensionPixel) {
-		return img, nil
+		return nil
+	}
+
+	scale := 1.0
+
+	if original_width > original_height {
+		scale = float64(dimensionPixel) / float64(original_width)
+	} else {
+		scale = float64(dimensionPixel) / float64(original_height)
 	}
 
 	// Resize the image
-	resized_image := resize.Thumbnail(uint(dimensionPixel), uint(dimensionPixel), img, interpolation)
+	err := img.Resize(scale, interpolation)
+	if err != nil {
+		return fmt.Errorf("image resize fail")
+	}
 
-	return resized_image, nil
+	return nil
 }

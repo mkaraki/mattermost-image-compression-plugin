@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"github.com/davidbyttow/govips/v2/vips"
 	"image"
 	"image/gif"
 	"image/jpeg"
@@ -24,61 +25,96 @@ func TestResizeImageOrPassThrough(t *testing.T) {
 	plugin.setConfiguration(config)
 
 	// Create a simple 2x2 pixel image
-	img := image.NewRGBA(image.Rect(0, 0, 2, 2))
+	img, err := vips.Black(2, 2)
+	assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
 
-	t.Run("Test with DoImageResize enabled but passthrough size", func(t *testing.T) {
-		expectedImg := img
-		actualImg := plugin.ResizeImageOrPassThrough(img)
-		assert.Equal(t, expectedImg.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with DoImageResize enabled and passthrough size")
-		assert.Equal(t, expectedImg.Bounds().Dy(), actualImg.Bounds().Dy(), "Expected image height does not match the actual image height with DoImageResize enabled and passthrough size")
+	t.Run("Test with DoImageResize enabled but pass through size", func(t *testing.T) {
+		plugin.configuration.DoImageResize = true
+		plugin.configuration.ImageMaxDimension = 100
+
+		expectedImg, err := img.Copy()
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to copy image.")
+		plugin.ResizeImageOrPassThrough(img)
+		assert.Equal(t, expectedImg.Width(), img.Width(), "Expected image width does not match the actual image width with DoImageResize enabled and passthrough size")
+		assert.Equal(t, expectedImg.Height(), img.Height(), "Expected image height does not match the actual image height with DoImageResize enabled and passthrough size")
 	})
 
 	t.Run("Test with DoImageResize enabled and over size", func(t *testing.T) {
-		img = image.NewRGBA(image.Rect(0, 0, 200, 200))
-		expectedImg := image.NewRGBA(image.Rect(0, 0, 100, 100))
-		actualImg := plugin.ResizeImageOrPassThrough(img)
+		plugin.configuration.DoImageResize = true
+		plugin.configuration.ImageMaxDimension = 100
 
-		assert.Equal(t, expectedImg.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with DoImageResize enabled and over size")
-		assert.Equal(t, expectedImg.Bounds().Dy(), actualImg.Bounds().Dy(), "Expected image height does not match the actual image height with DoImageResize enabled and over size")
+		img, err := vips.Black(200, 200)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		expectedImg, err := vips.Black(100, 100)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		plugin.ResizeImageOrPassThrough(img)
+
+		assert.Equal(t, expectedImg.Width(), img.Width(), "Expected image width does not match the actual image width with DoImageResize enabled and over size")
+		assert.Equal(t, expectedImg.Height(), img.Height(), "Expected image height does not match the actual image height with DoImageResize enabled and over size")
 	})
 
 	t.Run("Test with DoImageResize enabled and invalid config size", func(t *testing.T) {
+		plugin.configuration.DoImageResize = true
 		plugin.configuration.ImageMaxDimension = -1
-		img := image.NewRGBA(image.Rect(0, 0, 2000, 2000))
-		expectedImg := image.NewRGBA(image.Rect(0, 0, 1280, 1280))
-		actualImg := plugin.ResizeImageOrPassThrough(img)
 
-		assert.Equal(t, expectedImg.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with DoImageResize enabled and invalid config size")
-		assert.Equal(t, expectedImg.Bounds().Dy(), actualImg.Bounds().Dy(), "Expected image height does not match the actual image height with DoImageResize enabled and invalid config size")
+		img, err := vips.Black(2560, 2560)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		expectedImg, err := vips.Black(1280, 1280)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		plugin.ResizeImageOrPassThrough(img)
+
+		assert.Equal(t, expectedImg.Width(), img.Width(), "Expected image width does not match the actual image width with DoImageResize enabled and invalid config size")
+		assert.Equal(t, expectedImg.Height(), img.Height(), "Expected image height does not match the actual image height with DoImageResize enabled and invalid config size")
 
 		plugin.configuration.ImageMaxDimension = 100
 	})
 
 	t.Run("Test with DoImageResize disabled", func(t *testing.T) {
 		plugin.configuration.DoImageResize = false
-		expectedImg := image.NewRGBA(image.Rect(0, 0, 200, 200))
-		actualImg := plugin.ResizeImageOrPassThrough(img)
 
-		assert.Equal(t, expectedImg.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with DoImageResize disabled")
-		assert.Equal(t, expectedImg.Bounds().Dy(), actualImg.Bounds().Dy(), "Expected image height does not match the actual image height with DoImageResize disabled")
+		img, err := vips.Black(200, 200)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
 
-		plugin.configuration.DoImageResize = true
+		plugin.ResizeImageOrPassThrough(img)
+
+		assert.Equal(t, 200, img.Width(), "Expected image width does not match the actual image width with DoImageResize disabled")
+		assert.Equal(t, 200, img.Height(), "Expected image height does not match the actual image height with DoImageResize disabled")
 	})
 
 	t.Run("Test image aspect ratio is preserved (width is greater)", func(t *testing.T) {
-		expectImg := image.NewRGBA(image.Rect(0, 0, 100, 50))
-		actualImg := plugin.ResizeImageOrPassThrough(image.NewRGBA(image.Rect(0, 0, 200, 100)))
+		plugin.configuration.DoImageResize = true
+		plugin.configuration.ImageMaxDimension = 100
 
-		assert.Equal(t, expectImg.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with DoImageResize enabled and over size")
-		assert.Equal(t, expectImg.Bounds().Dy(), actualImg.Bounds().Dy(), "Expected image height does not match the actual image height with DoImageResize enabled and over size")
+		img, err := vips.Black(200, 100)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		expectedImg, err := vips.Black(100, 50)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		plugin.ResizeImageOrPassThrough(img)
+
+		assert.Equal(t, expectedImg.Width(), img.Width(), "Expected image width does not match the actual image width with DoImageResize enabled and over size")
+		assert.Equal(t, expectedImg.Height(), img.Height(), "Expected image height does not match the actual image height with DoImageResize enabled and over size")
 	})
 
 	t.Run("Test image aspect ratio is preserved (height is greater)", func(t *testing.T) {
-		expectImg := image.NewRGBA(image.Rect(0, 0, 50, 100))
-		actualImg := plugin.ResizeImageOrPassThrough(image.NewRGBA(image.Rect(0, 0, 100, 200)))
+		plugin.configuration.DoImageResize = true
+		plugin.configuration.ImageMaxDimension = 100
 
-		assert.Equal(t, expectImg.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with DoImageResize enabled and over size")
-		assert.Equal(t, expectImg.Bounds().Dy(), actualImg.Bounds().Dy(), "Expected image height does not match the actual image height with DoImageResize enabled and over size")
+		img, err := vips.Black(100, 200)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		expectedImg, err := vips.Black(50, 100)
+		assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
+
+		plugin.ResizeImageOrPassThrough(img)
+
+		assert.Equal(t, expectedImg.Width(), img.Width(), "Expected image width does not match the actual image width with DoImageResize enabled and over size")
+		assert.Equal(t, expectedImg.Height(), img.Height(), "Expected image height does not match the actual image height with DoImageResize enabled and over size")
 	})
 }
 
@@ -91,7 +127,8 @@ func TestExportImageAsWebp(t *testing.T) {
 	plugin.setConfiguration(config)
 
 	// Create a simple 2x2 pixel image
-	img := image.NewRGBA(image.Rect(0, 0, 2, 2))
+	img, err := vips.Black(2, 2)
+	assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create image.")
 
 	info := &model.FileInfo{}
 
@@ -165,89 +202,6 @@ func TestExportImageAsWebp(t *testing.T) {
 	})
 }
 
-func TestExportImageAsJpeg(t *testing.T) {
-	plugin := &Plugin{}
-	plugin.API = &MattermostMockAPI{}
-	config := &configuration{
-		ImageQuality: 10,
-	}
-	plugin.setConfiguration(config)
-
-	// Create a simple 2x2 pixel image
-	img := image.NewRGBA(image.Rect(0, 0, 2, 2))
-
-	info := &model.FileInfo{}
-
-	t.Run("Test with valid parameters", func(t *testing.T) {
-		var buf bytes.Buffer
-		info := &model.FileInfo{
-			Name:      "test.ext",
-			Extension: "ext",
-			MimeType:  "application/octet-stream",
-			Size:      0,
-		}
-
-		actualInfo, err := plugin.ExportImageAsJpeg(info, img, &buf)
-
-		assert.NoError(t, err, "ExportImageAsJpeg failed with valid parameters")
-
-		assert.Equal(t, "jpg", actualInfo.Extension, "Expected extension does not match the actual extension with valid parameters")
-		assert.Equal(t, "test.ext.jpg", actualInfo.Name, "Expected name does not match the actual name with valid parameters")
-		assert.Equal(t, "image/jpeg", actualInfo.MimeType, "Expected mime type does not match the actual mime type with valid parameters")
-
-		assert.Equal(t, int64(buf.Len()), actualInfo.Size, "Indicated size should match the buf length")
-
-		_, err = jpeg.Decode(&buf)
-		assert.NoError(t, err, "jpeg.Decode should not fail with ExportImageAsJpeg output")
-	})
-
-	t.Run("Test with invalid image quality", func(t *testing.T) {
-		plugin.configuration.ImageQuality = -1
-		var buf bytes.Buffer
-		info := &model.FileInfo{
-			Name:      "test.ext",
-			Extension: "ext",
-			MimeType:  "application/octet-stream",
-			Size:      0,
-		}
-
-		actualInfo, err := plugin.ExportImageAsJpeg(info, img, &buf)
-
-		assert.NoError(t, err, "ExportImageAsJpeg failed with invalid image quality")
-
-		assert.Equal(t, "jpg", actualInfo.Extension, "Expected extension does not match the actual extension with valid parameters")
-		assert.Equal(t, "test.ext.jpg", actualInfo.Name, "Expected name does not match the actual name with valid parameters")
-		assert.Equal(t, "image/jpeg", actualInfo.MimeType, "Expected mime type does not match the actual mime type with valid parameters")
-
-		assert.Equal(t, int64(buf.Len()), actualInfo.Size, "Indicated size should match the buf length")
-
-		_, err = jpeg.Decode(&buf)
-		assert.NoError(t, err, "jpeg.Decode should not fail with ExportImageAsJpeg output")
-
-		plugin.configuration.ImageQuality = 10
-	})
-
-	t.Run("Test with nil image", func(t *testing.T) {
-		var buf bytes.Buffer
-		_, err := plugin.ExportImageAsJpeg(info, nil, &buf)
-
-		assert.Error(t, err, "ExportImageAsJpeg should fail with nil image")
-	})
-
-	t.Run("Test with nil FileInfo", func(t *testing.T) {
-		var buf bytes.Buffer
-		_, err := plugin.ExportImageAsJpeg(nil, img, &buf)
-
-		assert.Error(t, err, "ExportImageAsJpeg should fail with nil FileInfo")
-	})
-
-	t.Run("Test with nil Writer", func(t *testing.T) {
-		_, err := plugin.ExportImageAsJpeg(info, img, nil)
-
-		assert.Error(t, err, "ExportImageAsJpeg should fail with nil Writer")
-	})
-}
-
 func TestReadImage(t *testing.T) {
 	plugin := &Plugin{}
 	plugin.API = &MattermostMockAPI{}
@@ -266,7 +220,7 @@ func TestReadImage(t *testing.T) {
 			assert.NoError(t, err, "ReadImage failed with valid image")
 			assert.NotNil(t, actualImg, "ReadImage should return a non-nil image with valid image")
 
-			assert.Equal(t, img.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with valid JPEG")
+			assert.Equal(t, img.Bounds().Dx(), actualImg.Width(), "Expected image width does not match the actual image width with valid JPEG")
 		})
 
 		t.Run("Test with valid PNG", func(t *testing.T) {
@@ -280,7 +234,7 @@ func TestReadImage(t *testing.T) {
 			assert.NoError(t, err, "ReadImage failed with valid image")
 			assert.NotNil(t, actualImg, "ReadImage should return a non-nil image with valid image")
 
-			assert.Equal(t, img.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with valid PNG")
+			assert.Equal(t, img.Bounds().Dx(), actualImg.Width(), "Expected image width does not match the actual image width with valid PNG")
 		})
 
 		t.Run("Test with valid GIF", func(t *testing.T) {
@@ -294,13 +248,15 @@ func TestReadImage(t *testing.T) {
 			assert.NoError(t, err, "ReadImage failed with valid image")
 			assert.NotNil(t, actualImg, "ReadImage should return a non-nil image with valid image")
 
-			assert.Equal(t, img.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with valid GIF")
+			assert.Equal(t, img.Bounds().Dx(), actualImg.Width(), "Expected image width does not match the actual image width with valid GIF")
 		})
 
 		t.Run("Test with valid WEBP", func(t *testing.T) {
 			var buf bytes.Buffer
 			imageEncoder := &ImageEncoder{}
-			_, err := imageEncoder.EncodeWebP(img, &buf, 90)
+			img, err := vips.Black(2, 2)
+			assert.NoError(t, err, "[TEST SPEC FAIL] Failed to create empty image")
+			_, err = imageEncoder.EncodeWebP(img, &buf, 90)
 			assert.NoError(t, err, "[TEST SPEC FAIL] Failed to encode image")
 
 			reader := bytes.NewReader(buf.Bytes())
@@ -309,7 +265,7 @@ func TestReadImage(t *testing.T) {
 			assert.NoError(t, err, "ReadImage failed with valid image")
 			assert.NotNil(t, actualImg, "ReadImage should return a non-nil image with valid image")
 
-			assert.Equal(t, img.Bounds().Dx(), actualImg.Bounds().Dx(), "Expected image width does not match the actual image width with valid WEBP")
+			assert.Equal(t, img.Width(), actualImg.Width(), "Expected image width does not match the actual image width with valid WEBP")
 		})
 	})
 
