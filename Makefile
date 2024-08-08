@@ -5,7 +5,7 @@ MM_DEBUG ?=
 MANIFEST_FILE ?= plugin.json
 GOPATH ?= $(shell go env GOPATH)
 GO_TEST_FLAGS ?= -race -cover -covermode=atomic -coverprofile=server.coverage.out
-GO_BUILD_FLAGS ?= -tags '!ignore_unused_command_line_argument'
+GO_BUILD_FLAGS ?= -tags 'netgo,osusergo,!ignore_unused_command_line_argument' -a  --ldflags '-linkmode external -extldflags=-static'
 MM_UTILITIES_DIR ?= ../mattermost-utilities
 DLV_DEBUG_PORT := 2346
 DEFAULT_GOOS := $(shell go env GOOS)
