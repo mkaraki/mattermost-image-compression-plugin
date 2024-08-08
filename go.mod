@@ -1,15 +1,13 @@
-module github.com/mattermost/mattermost-plugin-starter-template
+module github.com/mkaraki/mattermost-image-compression-plugin
 
 go 1.21
 
 toolchain go1.22.5
 
 require (
-	github.com/adrium/goheif v0.0.0-20230113233934-ca402e77a786
-	github.com/chai2010/webp v1.1.1
+	github.com/davidbyttow/govips/v2 v2.15.0
 	github.com/mattermost/mattermost/server/public v0.1.0
 	github.com/pkg/errors v0.9.1
-	go.oneofone.dev/resize v1.0.1
 	golang.org/x/image v0.19.0
 )
 
@@ -44,7 +42,6 @@ require (
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
-	github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd // indirect
 	github.com/stretchr/testify v1.9.0
 	github.com/tinylib/msgp v1.1.9 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
