@@ -1,6 +1,8 @@
 module github.com/mattermost/mattermost-plugin-starter-template
 
-go 1.19
+go 1.21
+
+toolchain go1.22.5
 
 require (
 	github.com/adrium/goheif v0.0.0-20230113233934-ca402e77a786
