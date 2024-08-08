@@ -1,11 +1,13 @@
 module github.com/mattermost/mattermost-plugin-starter-template
 
-go 1.19
+go 1.21
+
+toolchain go1.22.5
 
 require (
 	github.com/adrium/goheif v0.0.0-20230113233934-ca402e77a786
 	github.com/chai2010/webp v1.1.1
-	github.com/mattermost/mattermost/server/public v0.0.16
+	github.com/mattermost/mattermost/server/public v0.1.0
 	github.com/pkg/errors v0.9.1
 	go.oneofone.dev/resize v1.0.1
 	golang.org/x/image v0.19.0
