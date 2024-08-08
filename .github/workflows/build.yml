@@ -14,7 +14,7 @@ jobs:
 
     - uses: actions/setup-go@v4
       with:
-        go-version: '^1.21.5'
+        go-version: '^1.22.6'
 
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y gcc-multilib gcc-mingw-w64 binutils-mingw-w64 g++-mingw-w64
@@ -30,7 +30,7 @@ jobs:
       with:
         name: com.mkarakiapps.mattermost-image-compression-plugin
         path: dist/com.mkarakiapps.mattermost-image-compression-plugin-*.tar.gz
-      
+
     - name: Test
       run: make test
 
