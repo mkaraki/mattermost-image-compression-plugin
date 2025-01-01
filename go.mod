@@ -10,7 +10,7 @@ require (
 	github.com/mattermost/mattermost/server/public v0.1.0
 	github.com/pkg/errors v0.9.1
 	go.oneofone.dev/resize v1.0.1
-	golang.org/x/image v0.20.0
+	golang.org/x/image v0.23.0
 )
 
 require (
