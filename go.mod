@@ -4,7 +4,7 @@ go 1.23.0
 
 require (
 	github.com/adrium/goheif v0.0.0-20230113233934-ca402e77a786
-	github.com/chai2010/webp v1.1.1
+	github.com/chai2010/webp v1.4.0
 	github.com/mattermost/mattermost/server/public v0.1.0
 	github.com/pkg/errors v0.9.1
 	go.oneofone.dev/resize v1.0.1
