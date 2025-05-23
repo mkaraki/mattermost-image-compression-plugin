@@ -1,8 +1,6 @@
 module github.com/mattermost/mattermost-plugin-starter-template
 
-go 1.21
-
-toolchain go1.22.5
+go 1.23.0
 
 require (
 	github.com/adrium/goheif v0.0.0-20230113233934-ca402e77a786
@@ -10,7 +8,7 @@ require (
 	github.com/mattermost/mattermost/server/public v0.1.0
 	github.com/pkg/errors v0.9.1
 	go.oneofone.dev/resize v1.0.1
-	golang.org/x/image v0.23.0
+	golang.org/x/image v0.27.0
 )
 
 require (
@@ -54,7 +52,7 @@ require (
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/grpc v1.62.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
